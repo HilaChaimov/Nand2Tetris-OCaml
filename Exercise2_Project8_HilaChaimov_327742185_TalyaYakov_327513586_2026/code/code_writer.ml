@@ -20,6 +20,9 @@ let current_file = ref ""
 let set_file_name file_name =
   current_file := file_name
 
+(* שמירת שם הפונקציה הנוכחית כדי ליצור labels ייחודיים בתוך פונקציות *)
+let current_function = ref ""
+
 (* פונקציית עזר לכתיבת פקודות push *)
 let push_d_to_stack oc =
   emit oc "@SP";
@@ -282,21 +285,161 @@ let write_push_pop oc ct segment index =
       failwith "unsupported push/pop command"
 
 let write_label_goto_if oc ct label =
+  (*פונקציה לכתיבה של תווית, קפיצה ומעבר לפי תנאי *)
+  let full_label =
+    if !current_function = "" then label
+    else !current_function ^ "$" ^ label
+  in
   match ct with
   | CLabel ->
-      emit oc ("(" ^ label ^ ")") (* הגדרת תווית *)
+      emit oc ("(" ^ full_label ^ ")") (* הגדרת תווית *)
   | CGoto ->
-      emit oc ("@" ^ label); (* הכנת קפיצה לתווית *)
+      emit oc ("@" ^ full_label); (* הכנת קפיצה לתווית *)
       emit oc "0;JMP" (* קפיצה בלתי מותנית *)
   | CIf ->
       pop_stack_to_d oc; (* D = הערך העליון מהסטאק *)
-      emit oc ("@" ^ label); (* הכנת קפיצה לתווית *)
+      emit oc ("@" ^ full_label); (* הכנת קפיצה לתווית *)
       emit oc "D;JNE" (* אם D לא שווה ל־0, קפוץ לתווית *)
   | _ ->
       failwith "unsupported label/goto/if command"
 
 let write_function_call oc ct func_name n_args =
-  failwith "function/call not implemented yet"
+  match ct with
+
+  | CFunction ->
+      (* שמירת שם הפונקציה הנוכחית *)
+        current_function := func_name;
+      (* יצירת label לתחילת הפונקציה *)
+      emit oc ("(" ^ func_name ^ ")");
+
+      (* יצירת משתנים מקומיים:
+         בפקודת function המספר n_args הוא בעצם מספר ה־locals.
+         לכל local דוחפים 0 לסטאק. *)
+      for _ = 1 to n_args do
+        emit oc "@0";
+        emit oc "D=A";
+        push_d_to_stack oc
+      done
+
+  | CCall ->
+      (* יצירת כתובת חזרה ייחודית עבור הקריאה הנוכחית *)
+      let return_label = fresh_label ("RET_" ^ func_name ^ "_") in
+
+      (* push return-address *)
+      emit oc ("@" ^ return_label);
+      emit oc "D=A";
+      push_d_to_stack oc;
+
+      (* push LCL — שמירת LCL של הפונקציה הקוראת *)
+      emit oc "@LCL";
+      emit oc "D=M";
+      push_d_to_stack oc;
+
+      (* push ARG — שמירת ARG של הפונקציה הקוראת *)
+      emit oc "@ARG";
+      emit oc "D=M";
+      push_d_to_stack oc;
+
+      (* push THIS — שמירת THIS של הפונקציה הקוראת *)
+      emit oc "@THIS";
+      emit oc "D=M";
+      push_d_to_stack oc;
+
+      (* push THAT — שמירת THAT של הפונקציה הקוראת *)
+      emit oc "@THAT";
+      emit oc "D=M";
+      push_d_to_stack oc;
+
+      (* ARG = SP - n_args - 5 *)
+      emit oc "@SP";
+      emit oc "D=M";
+      emit oc ("@" ^ string_of_int (n_args + 5));
+      emit oc "D=D-A";
+      emit oc "@ARG";
+      emit oc "M=D";
+
+      (* LCL = SP — מתחילים frame חדשה עבור הפונקציה שנקראת *)
+      emit oc "@SP";
+      emit oc "D=M";
+      emit oc "@LCL";
+      emit oc "M=D";
+
+      (* goto func_name — קפיצה לפונקציה שנקראת *)
+      emit oc ("@" ^ func_name);
+      emit oc "0;JMP";
+
+      (* return_label — לכאן הפונקציה תחזור אחרי return *)
+      emit oc ("(" ^ return_label ^ ")")
+
+  | _ ->
+      failwith "unsupported function/call command"
 
 let write_return oc =
-  failwith "return not implemented yet"
+  (* FRAME = LCL, שומרים את תחילת מסגרת הפונקציה הנוכחית ב־R13 *)
+  emit oc "@LCL";
+  emit oc "D=M";
+  emit oc "@R13";
+  emit oc "M=D";
+
+  (* RET = *(FRAME - 5), שומרים את כתובת החזרה ב־R14 *)
+  emit oc "@5";
+  emit oc "A=D-A";
+  emit oc "D=M";
+  emit oc "@R14";
+  emit oc "M=D";
+
+  (* *ARG = pop(), שמים את ערך ההחזרה במקום שהפונקציה הקוראת מצפה לו *)
+  pop_stack_to_d oc;
+  emit oc "@ARG";
+  emit oc "A=M";
+  emit oc "M=D";
+
+  (* SP = ARG + 1, מחזירים את SP למקום שאחרי ערך ההחזרה *)
+  emit oc "@ARG";
+  emit oc "D=M+1";
+  emit oc "@SP";
+  emit oc "M=D";
+
+  (* THAT = *(FRAME - 1), שחזור THAT *)
+  emit oc "@R13";
+  emit oc "AM=M-1";
+  emit oc "D=M";
+  emit oc "@THAT";
+  emit oc "M=D";
+
+  (* THIS = *(FRAME - 2), שחזור THIS *)
+  emit oc "@R13";
+  emit oc "AM=M-1";
+  emit oc "D=M";
+  emit oc "@THIS";
+  emit oc "M=D";
+
+  (* ARG = *(FRAME - 3), שחזור ARG *)
+  emit oc "@R13";
+  emit oc "AM=M-1";
+  emit oc "D=M";
+  emit oc "@ARG";
+  emit oc "M=D";
+
+  (* LCL = *(FRAME - 4), שחזור LCL *)
+  emit oc "@R13";
+  emit oc "AM=M-1";
+  emit oc "D=M";
+  emit oc "@LCL";
+  emit oc "M=D";
+
+  (* goto RET, קפיצה לכתובת החזרה *)
+  emit oc "@R14";
+  emit oc "A=M";
+  emit oc "0;JMP"
+
+
+let write_init oc =
+  (* אתחול SP לכתובת 256 — תחילת ה-stack *)
+  emit oc "@256";
+  emit oc "D=A";
+  emit oc "@SP";
+  emit oc "M=D";
+
+  (* קריאה לפונקציה Sys.init כדי להתחיל את התוכנית *)
+  write_function_call oc CCall "Sys.init" 0
