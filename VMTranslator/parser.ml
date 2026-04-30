@@ -1,9 +1,9 @@
 type command_type =
-  | Cush
+  | CPush
   | CPop
   | CLabel
-  | CGArithmetic
-  | CPoto
+  | CArithmetic
+  | CGoto
   | CIf
   | CFunction
   | CCall

@@ -2,7 +2,7 @@
    talya yakov 327513586 *)
 
 
-   
+
 let () =
   (* בדיקה שקיבלנו נתיב כארגומנט בהרצה *)
   if Array.length Sys.argv < 2 then
@@ -24,6 +24,10 @@ let () =
     let fasm = dir_name ^ ".asm" in
     let fasm_path = Filename.concat path fasm in
     let oc = open_out fasm_path in
+
+    (* כתיבת bootstrap בתחילת קובץ ה־ASM *)
+    Code_writer.write_init oc;
+    
     
     List.iter 
       (fun file ->
