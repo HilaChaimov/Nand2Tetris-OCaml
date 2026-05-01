@@ -26,8 +26,8 @@ let () =
     let oc = open_out fasm_path in
 
     (* כתיבת bootstrap בתחילת קובץ ה־ASM *)
-    Code_writer.write_init oc;
-    
+    if List.exists (fun f -> f = "Sys.vm") fvm then
+      Code_writer.write_init oc;    
     
     List.iter 
       (fun file ->
