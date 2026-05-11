@@ -1,0 +1,289 @@
+class Game {
+    field Octopus octopus;
+    field Lion lion;
+    field int selected;      // 1 = Octopus, 2 = Lion
+    field int actionCount;
+
+    constructor Game new() {
+        let octopus = Octopus.new(120, 120, 18);
+        let lion = Lion.new(380, 120, 18);
+        let selected = 0;
+        let actionCount = 0;
+        return this;
+    }
+
+    method void run() {
+        do showOpeningScreen();
+        do chooseObject();
+        do actionLoop();
+        do showSummary();
+        return;
+    }
+
+    method void showOpeningScreen() {
+        do Screen.clearScreen();
+        do Screen.setColor(true);
+
+        do Output.moveCursor(0, 10);
+        do Output.printString("Exercise 3 - Choose an object");
+
+        do Output.moveCursor(2, 5);
+        do Output.printString("Press 1 for Octopus");
+
+        do Output.moveCursor(3, 5);
+        do Output.printString("Press 2 for Lion");
+
+        do Output.moveCursor(5, 5);
+        do Output.printString("Octopus");
+
+        do Output.moveCursor(5, 45);
+        do Output.printString("Lion");
+
+        do octopus.draw();
+        do lion.draw();
+
+        return;
+    }
+
+    method void chooseObject() {
+        var int key;
+
+        let key = 0;
+
+        while (selected = 0) {
+            let key = readKey();
+
+            if (key = 49) {
+                let selected = 1;
+            }
+
+            if (key = 50) {
+                let selected = 2;
+            }
+        }
+
+        return;
+    }
+
+    method void actionLoop() {
+        var int key;
+        var boolean finished;
+
+        let finished = false;
+
+        while (~finished) {
+            do redrawActionScreen();
+            let key = readKey();
+
+            if (key = 49) {
+                do moveSelectedLeft();
+                let actionCount = actionCount + 1;
+            }
+
+            if (key = 50) {
+                do moveSelectedRight();
+                let actionCount = actionCount + 1;
+            }
+
+            if (key = 51) {
+                do moveSelectedUp();
+                let actionCount = actionCount + 1;
+            }
+
+            if (key = 52) {
+                do moveSelectedDown();
+                let actionCount = actionCount + 1;
+            }
+
+            if (key = 53) {
+                do growSelected();
+                let actionCount = actionCount + 1;
+            }
+
+            if (key = 54) {
+                do shrinkSelected();
+                let actionCount = actionCount + 1;
+            }
+
+            if (key = 55) {
+                let finished = true;
+            }
+        }
+
+        return;
+    }
+
+    method void redrawActionScreen() {
+        do Screen.clearScreen();
+        do Screen.setColor(true);
+
+        do Output.moveCursor(0, 10);
+        do Output.printString("Selected object: ");
+        do printSelectedName();
+
+        do Output.moveCursor(1, 10);
+        do Output.printString("Actions count: ");
+        do Output.printInt(actionCount);
+
+        do Output.moveCursor(3, 5);
+        do Output.printString("1 = Move left");
+
+        do Output.moveCursor(4, 5);
+        do Output.printString("2 = Move right");
+
+        do Output.moveCursor(5, 5);
+        do Output.printString("3 = Move up");
+
+        do Output.moveCursor(6, 5);
+        do Output.printString("4 = Move down");
+
+        do Output.moveCursor(7, 5);
+        do Output.printString("5 = Grow");
+
+        do Output.moveCursor(8, 5);
+        do Output.printString("6 = Shrink");
+
+        do Output.moveCursor(9, 5);
+        do Output.printString("7 = Finish");
+
+        if (selected = 1) {
+            do octopus.draw();
+        }
+
+        if (selected = 2) {
+            do lion.draw();
+        }
+
+        return;
+    }
+
+    method void printSelectedName() {
+        if (selected = 1) {
+            do Output.printString("Octopus");
+        }
+
+        if (selected = 2) {
+            do Output.printString("Lion");
+        }
+
+        return;
+    }
+
+    method void moveSelectedLeft() {
+        if (selected = 1) {
+            do octopus.moveLeft();
+        }
+
+        if (selected = 2) {
+            do lion.moveLeft();
+        }
+
+        return;
+    }
+
+    method void moveSelectedRight() {
+        if (selected = 1) {
+            do octopus.moveRight();
+        }
+
+        if (selected = 2) {
+            do lion.moveRight();
+        }
+
+        return;
+    }
+
+    method void moveSelectedUp() {
+        if (selected = 1) {
+            do octopus.moveUp();
+        }
+
+        if (selected = 2) {
+            do lion.moveUp();
+        }
+
+        return;
+    }
+
+    method void moveSelectedDown() {
+        if (selected = 1) {
+            do octopus.moveDown();
+        }
+
+        if (selected = 2) {
+            do lion.moveDown();
+        }
+
+        return;
+    }
+
+    method void growSelected() {
+        if (selected = 1) {
+            do octopus.grow();
+        }
+
+        if (selected = 2) {
+            do lion.grow();
+        }
+
+        return;
+    }
+
+    method void shrinkSelected() {
+        if (selected = 1) {
+            do octopus.shrink();
+        }
+
+        if (selected = 2) {
+            do lion.shrink();
+        }
+
+        return;
+    }
+
+    method void showSummary() {
+        do Screen.clearScreen();
+        do Screen.setColor(true);
+
+        do Output.moveCursor(5, 10);
+        do Output.printString("Program finished.");
+
+        do Output.moveCursor(7, 10);
+        do Output.printString("Selected object: ");
+        do printSelectedName();
+
+        do Output.moveCursor(9, 10);
+        do Output.printString("Number of actions: ");
+        do Output.printInt(actionCount);
+
+        do Output.moveCursor(12, 10);
+        do Output.printString("Press any key to exit.");
+
+        do readKey();
+        return;
+    }
+
+    method int readKey() {
+        var int key;
+
+        let key = 0;
+
+        while (key = 0) {
+            let key = Keyboard.keyPressed();
+            do Sys.wait(5);
+        }
+
+        while (~(Keyboard.keyPressed() = 0)) {
+            do Sys.wait(5);
+        }
+
+        return key;
+    }
+
+    method void dispose() {
+        do octopus.dispose();
+        do lion.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

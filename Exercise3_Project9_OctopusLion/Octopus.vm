@@ -1,0 +1,473 @@
+function Octopus.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push argument 2
+pop this 2
+push constant 10
+pop this 3
+push pointer 0
+return
+function Octopus.draw 0
+push argument 0
+pop pointer 0
+push pointer 0
+push constant 0
+not
+call Octopus.paint 2
+pop temp 0
+push constant 0
+return
+function Octopus.erase 0
+push argument 0
+pop pointer 0
+push pointer 0
+push constant 0
+call Octopus.paint 2
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 0
+return
+function Octopus.paint 0
+push argument 0
+pop pointer 0
+push argument 1
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push this 1
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 2
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push this 2
+push constant 3
+call Math.divide 2
+sub
+push this 1
+push this 2
+push constant 4
+call Math.divide 2
+sub
+push constant 3
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push this 2
+push constant 3
+call Math.divide 2
+add
+push this 1
+push this 2
+push constant 4
+call Math.divide 2
+sub
+push constant 3
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push constant 6
+sub
+push this 1
+push this 2
+push constant 4
+call Math.divide 2
+add
+push this 0
+push constant 6
+add
+push this 1
+push this 2
+push constant 4
+call Math.divide 2
+add
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+sub
+push this 1
+push this 2
+add
+push this 0
+push constant 2
+push this 2
+call Math.multiply 2
+sub
+push this 1
+push constant 2
+push this 2
+call Math.multiply 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 3
+call Math.divide 2
+sub
+push this 1
+push this 2
+add
+push this 0
+push constant 3
+push this 2
+call Math.multiply 2
+push constant 2
+call Math.divide 2
+sub
+push this 1
+push constant 5
+push this 2
+call Math.multiply 2
+push constant 2
+call Math.divide 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 4
+call Math.divide 2
+sub
+push this 1
+push this 2
+add
+push this 0
+push this 2
+sub
+push this 1
+push constant 3
+push this 2
+call Math.multiply 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push constant 2
+sub
+push this 1
+push this 2
+add
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+sub
+push this 1
+push constant 3
+push this 2
+call Math.multiply 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 1
+push this 2
+add
+push this 0
+push constant 2
+push this 2
+call Math.multiply 2
+add
+push this 1
+push constant 2
+push this 2
+call Math.multiply 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 3
+call Math.divide 2
+add
+push this 1
+push this 2
+add
+push this 0
+push constant 3
+push this 2
+call Math.multiply 2
+push constant 2
+call Math.divide 2
+add
+push this 1
+push constant 5
+push this 2
+call Math.multiply 2
+push constant 2
+call Math.divide 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push this 2
+push constant 4
+call Math.divide 2
+add
+push this 1
+push this 2
+add
+push this 0
+push this 2
+add
+push this 1
+push constant 3
+push this 2
+call Math.multiply 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push constant 2
+add
+push this 1
+push this 2
+add
+push this 0
+push this 2
+push constant 2
+call Math.divide 2
+add
+push this 1
+push constant 3
+push this 2
+call Math.multiply 2
+add
+call Screen.drawLine 4
+pop temp 0
+push this 0
+push constant 2
+push this 2
+call Math.multiply 2
+sub
+push this 1
+push constant 2
+push this 2
+call Math.multiply 2
+add
+push constant 2
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push this 2
+sub
+push this 1
+push constant 3
+push this 2
+call Math.multiply 2
+add
+push constant 2
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push this 2
+add
+push this 1
+push constant 3
+push this 2
+call Math.multiply 2
+add
+push constant 2
+call Screen.drawCircle 3
+pop temp 0
+push this 0
+push constant 2
+push this 2
+call Math.multiply 2
+add
+push this 1
+push constant 2
+push this 2
+call Math.multiply 2
+add
+push constant 2
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 0
+return
+function Octopus.moveLeft 0
+push argument 0
+pop pointer 0
+push this 0
+push constant 2
+push this 2
+call Math.multiply 2
+push this 3
+add
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Octopus.erase 1
+pop temp 0
+push this 0
+push this 3
+sub
+pop this 0
+push pointer 0
+call Octopus.draw 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Octopus.moveRight 0
+push argument 0
+pop pointer 0
+push this 0
+push constant 509
+push constant 2
+push this 2
+call Math.multiply 2
+sub
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Octopus.erase 1
+pop temp 0
+push this 0
+push this 3
+add
+pop this 0
+push pointer 0
+call Octopus.draw 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Octopus.moveUp 0
+push argument 0
+pop pointer 0
+push this 1
+push this 2
+push this 3
+add
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Octopus.erase 1
+pop temp 0
+push this 1
+push this 3
+sub
+pop this 1
+push pointer 0
+call Octopus.draw 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Octopus.moveDown 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 255
+push constant 3
+push this 2
+call Math.multiply 2
+sub
+push this 3
+sub
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Octopus.erase 1
+pop temp 0
+push this 1
+push this 3
+add
+pop this 1
+push pointer 0
+call Octopus.draw 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Octopus.grow 0
+push argument 0
+pop pointer 0
+push this 2
+push constant 28
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Octopus.erase 1
+pop temp 0
+push this 2
+push constant 4
+add
+pop this 2
+push pointer 0
+call Octopus.draw 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Octopus.shrink 0
+push argument 0
+pop pointer 0
+push this 2
+push constant 10
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Octopus.erase 1
+pop temp 0
+push this 2
+push constant 4
+sub
+pop this 2
+push pointer 0
+call Octopus.draw 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Octopus.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

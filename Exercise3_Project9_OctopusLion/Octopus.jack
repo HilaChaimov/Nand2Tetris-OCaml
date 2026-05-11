@@ -1,0 +1,122 @@
+class Octopus {
+    field int x;
+    field int y;
+    field int size;
+    field int step;
+
+    constructor Octopus new(int startX, int startY, int startSize) {
+        let x = startX;
+        let y = startY;
+        let size = startSize;
+        let step = 10;
+        return this;
+    }
+
+    method void draw() {
+        do paint(true);
+        return;
+    }
+
+    method void erase() {
+        do paint(false);
+        do Screen.setColor(true);
+        return;
+    }
+
+    method void paint(boolean ink) {
+    do Screen.setColor(ink);
+
+    // Main round head
+    do Screen.drawCircle(x, y, size);
+
+    // Lower body, makes the octopus look wider and less like a jellyfish
+    do Screen.drawCircle(x, y + (size / 2), size);
+
+    // Eyes
+    do Screen.drawCircle(x - (size / 3), y - (size / 4), 3);
+    do Screen.drawCircle(x + (size / 3), y - (size / 4), 3);
+
+    // Mouth
+    do Screen.drawRectangle(x - 6, y + (size / 4), x + 6, y + (size / 4) + 1);
+
+    // Left tentacles
+    do Screen.drawLine(x - (size / 2), y + size, x - (2 * size), y + (2 * size));
+    do Screen.drawLine(x - (size / 3), y + size, x - ((3 * size) / 2), y + ((5 * size) / 2));
+    do Screen.drawLine(x - (size / 4), y + size, x - size, y + (3 * size));
+    do Screen.drawLine(x - 2, y + size, x - (size / 2), y + (3 * size));
+
+    // Right tentacles
+    do Screen.drawLine(x + (size / 2), y + size, x + (2 * size), y + (2 * size));
+    do Screen.drawLine(x + (size / 3), y + size, x + ((3 * size) / 2), y + ((5 * size) / 2));
+    do Screen.drawLine(x + (size / 4), y + size, x + size, y + (3 * size));
+    do Screen.drawLine(x + 2, y + size, x + (size / 2), y + (3 * size));
+
+    // Small circles at the end of some tentacles
+    do Screen.drawCircle(x - (2 * size), y + (2 * size), 2);
+    do Screen.drawCircle(x - size, y + (3 * size), 2);
+    do Screen.drawCircle(x + size, y + (3 * size), 2);
+    do Screen.drawCircle(x + (2 * size), y + (2 * size), 2);
+
+    do Screen.setColor(true);
+    return;
+}
+
+    method void moveLeft() {
+        if (x > ((2 * size) + step)) {
+            do erase();
+            let x = x - step;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveRight() {
+        if (x < (509 - (2 * size))) {
+            do erase();
+            let x = x + step;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveUp() {
+        if (y > (size + step)) {
+            do erase();
+            let y = y - step;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveDown() {
+        if (y < (255 - (3 * size) - step)) {
+            do erase();
+            let y = y + step;
+            do draw();
+        }
+        return;
+    }
+
+    method void grow() {
+        if (size < 28) {
+            do erase();
+            let size = size + 4;
+            do draw();
+        }
+        return;
+    }
+
+    method void shrink() {
+        if (size > 10) {
+            do erase();
+            let size = size - 4;
+            do draw();
+        }
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

@@ -1,0 +1,129 @@
+class Lion {
+    field int x;
+    field int y;
+    field int size;
+    field int step;
+
+    constructor Lion new(int startX, int startY, int startSize) {
+        let x = startX;
+        let y = startY;
+        let size = startSize;
+        let step = 10;
+        return this;
+    }
+
+    method void draw() {
+        do paint(true);
+        return;
+    }
+
+    method void erase() {
+        do paint(false);
+        do Screen.setColor(true);
+        return;
+    }
+
+    method void paint(boolean ink) {
+        do Screen.setColor(ink);
+
+        // mane
+        do Screen.drawCircle(x - size, y, size / 2);
+        do Screen.drawCircle(x + size, y, size / 2);
+        do Screen.drawCircle(x, y - size, size / 2);
+        do Screen.drawCircle(x, y + size, size / 2);
+        do Screen.drawCircle(x - (size / 2), y - (size / 2), size / 2);
+        do Screen.drawCircle(x + (size / 2), y - (size / 2), size / 2);
+        do Screen.drawCircle(x - (size / 2), y + (size / 2), size / 2);
+        do Screen.drawCircle(x + (size / 2), y + (size / 2), size / 2);
+
+        // face
+        do Screen.drawCircle(x, y, size);
+
+        // ears
+        do Screen.drawCircle(x - (size / 2), y - size, size / 4);
+        do Screen.drawCircle(x + (size / 2), y - size, size / 4);
+
+        // eyes
+        do Screen.drawCircle(x - (size / 3), y - (size / 4), 2);
+        do Screen.drawCircle(x + (size / 3), y - (size / 4), 2);
+
+        // nose
+        do Screen.drawRectangle(x - 2, y, x + 2, y + 2);
+
+        // mouth
+        do Screen.drawRectangle(x - 5, y + 5, x + 5, y + 6);
+
+        // body
+        do Screen.drawRectangle(x - size, y + size, x + size, y + (3 * size));
+
+        // legs
+        do Screen.drawRectangle(x - (size / 2), y + (3 * size), x - (size / 2) + 2, y + (4 * size));
+        do Screen.drawRectangle(x + (size / 2), y + (3 * size), x + (size / 2) + 2, y + (4 * size));
+
+        // tail
+        do Screen.drawRectangle(x + size, y + (2 * size), x + (2 * size), y + (2 * size) + 1);
+        do Screen.drawCircle(x + (2 * size), y + (2 * size), 2);
+
+        do Screen.setColor(true);
+        return;
+    }
+
+    method void moveLeft() {
+        if (x > ((2 * size) + step)) {
+            do erase();
+            let x = x - step;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveRight() {
+        if (x < (509 - (2 * size))) {
+            do erase();
+            let x = x + step;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveUp() {
+        if (y > (size + step)) {
+            do erase();
+            let y = y - step;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveDown() {
+        if (y < (255 - (4 * size) - step)) {
+            do erase();
+            let y = y + step;
+            do draw();
+        }
+        return;
+    }
+
+    method void grow() {
+        if (size < 24) {
+            do erase();
+            let size = size + 4;
+            do draw();
+        }
+        return;
+    }
+
+    method void shrink() {
+        if (size > 10) {
+            do erase();
+            let size = size - 4;
+            do draw();
+        }
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}
