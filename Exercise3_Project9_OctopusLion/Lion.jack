@@ -43,16 +43,7 @@ class Lion {
         do Screen.drawCircle(x - (size / 2), y - size, size / 4);
         do Screen.drawCircle(x + (size / 2), y - size, size / 4);
 
-        // eyes
-        do Screen.drawCircle(x - (size / 3), y - (size / 4), 2);
-        do Screen.drawCircle(x + (size / 3), y - (size / 4), 2);
-
-        // nose
-        do Screen.drawRectangle(x - 2, y, x + 2, y + 2);
-
-        // mouth
-        do Screen.drawRectangle(x - 5, y + 5, x + 5, y + 6);
-
+      
         // body
         do Screen.drawRectangle(x - size, y + size, x + size, y + (3 * size));
 

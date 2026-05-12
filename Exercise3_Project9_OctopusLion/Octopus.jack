@@ -32,13 +32,7 @@ class Octopus {
     // Lower body, makes the octopus look wider and less like a jellyfish
     do Screen.drawCircle(x, y + (size / 2), size);
 
-    // Eyes
-    do Screen.drawCircle(x - (size / 3), y - (size / 4), 3);
-    do Screen.drawCircle(x + (size / 3), y - (size / 4), 3);
-
-    // Mouth
-    do Screen.drawRectangle(x - 6, y + (size / 4), x + 6, y + (size / 4) + 1);
-
+  
     // Left tentacles
     do Screen.drawLine(x - (size / 2), y + size, x - (2 * size), y + (2 * size));
     do Screen.drawLine(x - (size / 3), y + size, x - ((3 * size) / 2), y + ((5 * size) / 2));
