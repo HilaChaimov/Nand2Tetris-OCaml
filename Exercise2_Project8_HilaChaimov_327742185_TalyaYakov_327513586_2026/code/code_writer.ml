@@ -375,7 +375,7 @@ let write_function_call oc ct func_name n_args =
       failwith "unsupported function/call command"
 
 let write_return oc =
-  (* FRAME = LCL, שומרים את תחילת מסגרת הפונקציה הנוכחית ב־R13 *)
+  (* למרות שזה נראה מיותר כי משחזרים את משנים את לוקאל רק בסוף כשכבר לא צריך אותו כי הוא משנה חשוב שאנחנו  לא רוצים לשנותלו את הערך סתם אם לא חייבים  FRAME = LCL, שומרים את תחילת מסגרת הפונקציה הנוכחית ב־R13  *)
   emit oc "@LCL";
   emit oc "D=M";
   emit oc "@R13";
